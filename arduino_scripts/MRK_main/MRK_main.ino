@@ -4,6 +4,7 @@
 #include <WiFiSSLClient.h>
 #include "Arduino_BHY2Host.h"
 #include "arduino_secrets.h" // Include your WiFi credentials
+#include "model.h" // Include simple classifier
 
 // Wi-Fi credentials loaded from arduino_secrets.h
 char ssid[] = SECRET_SSID;
@@ -17,8 +18,7 @@ WiFiSSLClient client;
 #define LOUDNESS_PIN A1
 #define BRIGHTNESS_PIN A2
 
-// Threshold for yaw (you can adjust this value)
-float yawThreshold = 45.0; // Yaw value that triggers the HTTP request
+
 // Variables to store sensor data received from the slave
 float yawValue;
 
@@ -55,11 +55,16 @@ void loop() {
       Wire.readBytes((char*)&yawValue, sizeof(yawValue));
       Serial.print("Yaw received: ");
       Serial.println(yawValue);
+      // Send data to classifier
+      int result = simple_classifier(yawValue);
 
-      if (yawValue >= yawThreshold) {
-        Serial.println("Yaw exceeds threshold. Sending data to server...");
-        sendReqToServer(); // Send request to server
-      }
+          // print the result
+        if (result == 1) {
+          Serial.println("Yaw exceeds threshold. Sending data to server...");
+          sendReqToServer(); // Send request to server
+        } else {
+          Serial.println("Yaw in range");
+        }
     } else {
       Serial.println("Error: Failed to read yaw data");
     }

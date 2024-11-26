@@ -1,1 +1,115 @@
-<h1>index</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout with Navbar, Bipartite View, and Bottom Row</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+        background-color: #121212; /* Dark background color */
+        color: #ffffff; /* Light text color for contrast */
+        font-family: Arial, sans-serif; /* Clean font style */
+    }
+</style>
+  <style>
+    /* Ensures that the carousel takes up the full width of the column */
+    .carousel-item img {
+        width: 100%; /* Makes images stretch across the full width */
+        height: auto; /* Adjusts the height to maintain aspect ratio */
+    }
+    /* Optional: Ensure the carousel itself takes up the full height of the column */
+    .carousel-inner {
+        height: 100%;
+    }
+    /* Fixed height for columns */
+    .fixed-height {
+      height: 400px; /* Set the height of columns to 400px */
+      overflow: hidden; /* Prevent overflow in the carousel and other elements */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar (Top) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">SensePedalBoard</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content (Middle) -->
+  <div class="container mt-5">
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-7 fixed-height">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+              <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+              <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="/static/Images/whitey.jpg" class="d-block w-full" alt="Distortion Pedal">
+              </div>
+              <div class="carousel-item">
+                <img src="/static/Images/Fuzz.jpeg" class="d-block w-100" alt="Fuzz Pedal">
+              </div>
+              <div class="carousel-item">
+                <img src="/static/Images/Tube.jpeg" class="d-block w-100" alt="Tube Pedal">
+              </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </a>
+          </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-5">
+        <div class="bg-dark text-white p-3 fixed-height">
+          <h3>Audio Signal</h3>
+          <p>Details about the audio signal processing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="bg-dark text-white p-3">
+          <h3>Choose Pedal Order</h3>
+          <p>Drag and drop pedals to create your desired pedalboard setup.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (optional for interactivity like toggling navbar) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

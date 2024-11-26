@@ -6,7 +6,7 @@
 #include <Wire.h>
 
 // Initialize sensors
-Sensor gyroscope(SENSOR_ID_GYRO);   // Object to handle the gyroscope sensor
+SensorXYZ gyro(SENSOR_ID_GYRO);
 float yaw;
 
 
@@ -22,7 +22,7 @@ void setup() {
   Wire.onRequest(sendData);      // Set the callback function to execute when the master requests data
 
   // Initialize gyroscope
-  gyroscope.begin();           // Start the gyroscope sensor
+  gyro.begin();           // Start the gyroscope sensor
 }
 
 void loop() {
@@ -30,12 +30,12 @@ void loop() {
   BHY2.update();                 // Fetch new sensor data from the Nicla Sense ME
 
   // Store the latest sensor values for yaw
-  yaw = gyroscope.value(Sensor::Z);   // Get angular velocity on the Z-axis in radians per second (or degrees per second if scaled appropriately)
+  yaw = gyro.z();   // Get angular velocity on the Z-axis in radians per second (or degrees per second if scaled appropriately)
   delay(1000);                    // Delay for 1 second to control the update rate
 
   //For debug purposes we print data collected:
   Serial.print("Yaw Rate: ");
-  Serial.print(yawRate);    // Yaw rate in rad/s
+  Serial.print(yaw);    // Yaw rate in rad/s
   Serial.println(" rad/s");
 }
 
