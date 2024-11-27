@@ -3,70 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Layout with Navbar, Bipartite View, and Bottom Row</title>
+  <title>Layout with Clear Button</title>
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
+    /* General page styling */
     body {
         background-color: #121212; /* Dark background color */
         color: #ffffff; /* Light text color for contrast */
         font-family: Arial, sans-serif; /* Clean font style */
     }
-</style>
-  <style>
-    /* Ensures that the carousel takes up the full width of the column */
+
+    /* Carousel image styling */
     .carousel-item img {
         width: 100%; /* Makes images stretch across the full width */
         height: auto; /* Adjusts the height to maintain aspect ratio */
     }
-    /* Optional: Ensure the carousel itself takes up the full height of the column */
+
+    /* Fixed height for the carousel container */
     .carousel-inner {
-        height: 100%;
+        height: 100%; /* Ensures images occupy the full height of the carousel */
     }
-    /* Fixed height for columns */
+
     .fixed-height {
-      height: 400px; /* Set the height of columns to 400px */
-      overflow: hidden; /* Prevent overflow in the carousel and other elements */
+      height: 400px; /* Set height of both columns */
+      overflow: hidden; /* Prevent overflow in the carousel or other sections */
+    }
+
+    /* Styling for the array-like structure container */
+    #arrayContainer {
+      display: flex; /* Use flexbox for horizontal alignment */
+      gap: 10px; /* Add spacing between appended images */
+      padding: 10px; /* Add padding inside the container */
+      margin-top: 10px; /* Add spacing above the container */
+      border: 2px solid #ff9100; /* Highlighted border for the container */
+      min-height: 150px; /* Ensure a minimum height */
+      background-color: #1e1e1e; /* Slightly lighter background for contrast */
+      overflow-x: auto; /* Allow horizontal scrolling when images exceed width */
+    }
+
+    /* Styling for each appended image in the array-like structure */
+    .array-item {
+      width: 100px; /* Fixed width for appended images */
+      height: 100px; /* Fixed height for appended images */
+      object-fit: cover; /* Maintain aspect ratio within the fixed size */
+      border: 2px solid #ccc; /* Add a light border for visual separation */
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar (Top) -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">SensePedalBoard</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-        </ul>
-      </div>
+<!-- Navbar (Top) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <!-- Logo and Brand Name -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="/static/images/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+      SensePedalBoard
+    </a>
+    <!-- Toggler Button for Mobile View -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact</a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- Main Content (Middle) -->
+
+  <!-- Main Content (Middle Section) -->
   <div class="container mt-5">
     <div class="row">
-      <!-- Left Column -->
+      <!-- Left Column (Carousel) -->
       <div class="col-md-7 fixed-height">
+        <!-- Bootstrap Carousel -->
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <!-- Carousel indicators -->
             <ol class="carousel-indicators">
               <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
               <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
               <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
             </ol>
+            <!-- Carousel images -->
             <div class="carousel-inner">
               <div class="carousel-item active">
                 <img src="/static/Images/whitey.jpg" class="d-block w-full" alt="Distortion Pedal">
@@ -75,9 +106,10 @@
                 <img src="/static/Images/Fuzz.jpeg" class="d-block w-100" alt="Fuzz Pedal">
               </div>
               <div class="carousel-item">
-                <img src="/static/Images/Tube.jpeg" class="d-block w-100" alt="Tube Pedal">
+                <img src="/static/Images/Distortion.jpeg" class="d-block w-100" alt="Tube Pedal">
               </div>
             </div>
+            <!-- Carousel navigation buttons -->
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
@@ -93,7 +125,7 @@
       <div class="col-md-5">
         <div class="bg-dark text-white p-3 fixed-height">
           <h3>Audio Signal</h3>
-          <p>Details about the audio signal processing.</p>
+          <p>Details about the audio signal processing...</p>
         </div>
       </div>
     </div>
@@ -103,13 +135,64 @@
       <div class="col-12">
         <div class="bg-dark text-white p-3">
           <h3>Choose Pedal Order</h3>
-          <p>Drag and drop pedals to create your desired pedalboard setup.</p>
+          <p>Click pedals to create your desired pedalboard setup.</p>
+          <!-- Array-like structure -->
+          <div id="arrayContainer">
+            <!-- Clicked images from the carousel will be appended here -->
+          </div>
+          <!-- Clear button -->
+          <button id="clearButton" class="btn btn-danger mt-3" style="background-color: #ff9100; color: white">Clear All</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap JS (optional for interactivity like toggling navbar) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Select all images in the carousel
+    const carouselImages = document.querySelectorAll('.carousel-item img');
+
+    // Select the container for appended images
+    const arrayContainer = document.getElementById('arrayContainer');
+
+    // Select the Clear button
+    const clearButton = document.getElementById('clearButton');
+
+    // Function to check if an image already exists in the arrayContainer
+    function imageExists(src) {
+      // Check if any existing image in the container has the same src
+      const existingImages = arrayContainer.querySelectorAll('.array-item');
+      return Array.from(existingImages).some(image => image.src === src);
+    }
+
+    // Add click listener to each image in the carousel
+    carouselImages.forEach((image) => {
+      image.addEventListener('click', () => {
+        // Check if the image already exists in the container
+        if (imageExists(image.src)) {
+          alert("This pedal has already been inserted in the pedalboard.");
+          return; // Do nothing if the image already exists
+        }
+
+        // Clone the clicked image
+        const imgClone = image.cloneNode(true);
+        imgClone.classList.add('array-item'); // Add a class for styling
+
+        // Append the cloned image to the array-like structure
+        arrayContainer.appendChild(imgClone);
+
+        //Here must be inserted the HTTP call to server that notifies that the pedal has been successful added to the circular array
+        // ...
+
+      });
+    });
+
+    // Clear button functionality
+    clearButton.addEventListener('click', () => {
+      // Clear all content from the array container
+      arrayContainer.innerHTML = '';
+    });
+  </script>
 </body>
 </html>

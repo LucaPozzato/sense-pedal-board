@@ -8,7 +8,7 @@ curr_pedal = 0
 
 @app.get("/")
 def index():
-    return render_template("index.html", title = 'index')
+    return render_template("index©.html", title = 'index')
 
 @app.get("/next_pedal")
 def next_pedal():
