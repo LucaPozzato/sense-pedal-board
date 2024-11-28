@@ -52,7 +52,7 @@
 #X obj 1098 288 -;
 #X obj 976 379 +~ 200;
 #X obj 975 297 *~ 1500;
-#X text 1257 278 <-- Maximum of the freq. range;
+#X text 1233 263 <-- Maximum of the freq. range;
 #X text 1211 350 <-- Minimum of the freq. range;
 #X obj 975 214 ctlin;
 #X obj 975 254 / 127;
