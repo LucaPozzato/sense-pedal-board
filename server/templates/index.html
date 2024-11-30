@@ -197,7 +197,7 @@
     }
 
     // Add click listener to each image in the carousel
-    carouselImages.forEach((image) => {
+    carouselImages.forEach((image, index) => {
       image.addEventListener('click', () => {
         // Check if the image already exists in the container
         if (imageExists(image.src)) {
@@ -213,8 +213,34 @@
         arrayContainer.appendChild(imgClone);
 
         //Here must be inserted the HTTP call to server that notifies that the pedal has been successful added to the circular array
-        // ...
+        
+        // Create the payload with the pedal number
+        const payload = {
+          pedalNumber: index + 1 // Assuming pedal numbers start from 1
+        };
 
+        // Send HTTP request to the server
+        fetch('/add_pedal', { // Replace `/add-pedal` with your server endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify JSON payload
+        },
+        body: JSON.stringify(payload), // Convert the payload to JSON
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to add pedal to the server.');
+          }
+          return response.json(); // Parse JSON response from server if needed
+        })
+        // .then(data => {
+        //   console.log('Server response:', data); // Optional: Log server response
+        //   alert(`Pedal ${payload.pedalNumber} added successfully.`);
+        // })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to notify the server.');
+        });
       });
     });
 
@@ -222,7 +248,26 @@
     clearButton.addEventListener('click', () => {
       // Clear all content from the array container
       arrayContainer.innerHTML = '';
-    });
+
+      // Send HTTP request to the server
+      fetch('/clear_pedal_array', {
+        method: 'GET',
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to clear array to the server.');
+          }
+          return response.json();
+        })
+        // .then(data => {
+        //   console.log('Server response:', data);
+        //   alert(`Array cleared successfully`);
+        // })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed in clearing array');
+        });
+      });
   </script>
 </body>
 </html>

@@ -21,7 +21,8 @@ WiFiClient client;
 #define BRIGHTNESS_PIN A2
 
 // Variables to store sensor data received from the slave
-float yawValue;
+float data, pitch, yaw;
+int result = 0;
 
 // Timer variables
 unsigned long lastDataSentTime = 0;
@@ -88,24 +89,30 @@ void loop()
 {
   unsigned long currentMillis = millis();
   static unsigned long lastRequestTime = 0;
-
-  if (currentMillis - lastRequestTime >= 100)
-  { // Every second
+  if (currentMillis - lastRequestTime >= 30)
+  {
     lastRequestTime = currentMillis;
 
     // Request data from the slave device (Nicla Sense ME) with I2C address 0x29
-    if (Wire.requestFrom(0x29, sizeof(yawValue)) == sizeof(yawValue))
+    if (Wire.requestFrom(0x29, sizeof(data)) == sizeof(data))
     {
-      Wire.readBytes((char *)&yawValue, sizeof(yawValue));
+      Wire.readBytes((char *)&(data), sizeof(data));
 
-      // Send data to classifier
-      int result = simple_classifier(yawValue);
+      Serial.println(data);
 
-      // Print the result
-      if (result == 1)
-      {
-        Serial.println("Yaw exceeds threshold. Sending data to server...");
-        nextPedal(); // Send request to server
+      if (data < 128) {
+        pitch = data;
+        result = simple_yaw_classifier(yaw);
+        updatePedalValue(result);
+      }
+      else {
+        yaw = data;
+        result = simple_yaw_classifier(yaw);
+        if (result == 1)
+        {
+          Serial.println("Yaw exceeds threshold. Sending data to server...");
+          nextPedal(); // Send request to server
+        }
       }
     }
     else
@@ -122,9 +129,9 @@ void nextPedal()
   { // Replace with your server
     Serial.println("Connected to server. Sending data...");
     client.print("GET /next_pedal HTTP/1.1\r\n");
-    client.print("Host: "); 
+    client.print("Host: ");
     client.print(server_ip);
-    client.print("\r\n");// Replace with your server
+    client.print("\r\n"); // Replace with your server
     Serial.println("Data sent successfully.");
   }
   else
@@ -133,16 +140,21 @@ void nextPedal()
   }
 }
 
-void updatePedalValue(int value) { 
-    // Send HTTP request to server
+void updatePedalValue(int value)
+{
+  // Send HTTP request to server
   if (client.connect(server_ip, server_port))
   { // Replace with your server
-    Serial.println("Connected to server. Sending data...");
-    client.print("POST /pedal_value HTTP/1.1\r\n");
-    client.print("Host: "); 
-    client.print(server_ip);
-    client.print("\r\n");// Replace with your server
-    Serial.println("Data sent successfully.");
+    String jsonData = "{\"pedal value\":\"" + String(value) + "\"}";
+
+    client.println("POST /pedal_value HTTP/1.1");
+    client.print("Host: ");
+    client.println(server_ip);
+    client.println("Content-Type: application/json");
+    client.print("Content-Length: ");
+    client.println(jsonData.length());
+    client.println(); // Empty line to separate headers from body
+    client.println(jsonData);
   }
   else
   {

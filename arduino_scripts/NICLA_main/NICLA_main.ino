@@ -7,7 +7,9 @@
 
 // Initialize sensors
 SensorXYZ gyro(SENSOR_ID_GYRO);
-float yaw;
+SensorXYZ mag(SENSOR_ID_MAG);
+SensorQuaternion quat(SENSOR_ID_RV);
+float pitch, yaw, data;
 
 void setup()
 {
@@ -24,6 +26,8 @@ void setup()
 
   // Initialize gyroscope
   gyro.begin(); // Start the gyroscope sensor
+  mag.begin();
+  quat.begin();
 }
 
 void loop()
@@ -31,17 +35,39 @@ void loop()
   // Update all connected sensors and retrieve their latest data
   BHY2.update(); // Fetch new sensor data from the Nicla Sense ME
 
-  // Store the latest sensor values for yaw
-  yaw = gyro.z(); // Get angular velocity on the Z-axis in radians per second (or degrees per second if scaled appropriately)
-  delay(100);     // Delay for 1 second to control the update rate
+  float lower_pitch = 0, upper_pitch = 0.5, lower_yaw = 128, upper_yaw = 4500;
 
-  // For debug purposes we print data collected:
-  Serial.println(yaw); // Yaw rate in rad/s
+  // pitch = -atan2(quat.y(), quat.x()) * 180.0 / PI;
+  pitch = quat.z() / sqrt(1.0 - quat.w() * quat.w());
+
+  Serial.println(pitch);
+
+  if (pitch > upper_pitch) {
+    pitch = upper_pitch;
+  } else if (pitch < lower_pitch) {
+    pitch = lower_pitch;
+  }
+  pitch = (int) ((pitch - lower_pitch)/(upper_pitch - lower_pitch) * 127);
+  data = pitch;
+
+  delay(10);
+
+  yaw = gyro.z();
+  if (yaw > upper_yaw) {
+    yaw = upper_yaw;
+  } else if (yaw < lower_yaw) {
+    yaw = lower_yaw;
+  }
+
+  data = yaw;
+
+   // Get angular velocity on the Z-axis in radians per second (or degrees per second if scaled appropriately)
+  delay(10);     // Delay for 1 second to control the update rate
 }
 
 // Function to send data to the master when requested via I2C
 void sendData()
 {
-  // Send the yaw value as bytes over I2C
-  Wire.write((uint8_t *)&yaw, sizeof(yaw));
+    // Send the yaw value as bytes over I2C
+  Wire.write((uint8_t *)&data, sizeof(data));
 }
