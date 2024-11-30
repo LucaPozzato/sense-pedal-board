@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, abort
 import json
+import os
+import time
 
 app = Flask(__name__)
 
-pedal_board = []
+pedalboard = [0, 3, 7]
 curr_pedal = 0
+os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedalboard[curr_pedal]) + ' 60')
 
 @app.get("/")
 def index():
@@ -12,10 +15,18 @@ def index():
 
 @app.get("/next_pedal")
 def next_pedal():
+    global pedalboard
+    global curr_pedal
+
+    os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedalboard[curr_pedal]) + ' 60')
+    curr_pedal = (curr_pedal + 1) % len(pedalboard)
+    time.sleep(1)
+    os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedalboard[curr_pedal]) + ' 60')
     return redirect(url_for('index'))
 
 @app.get("/pedal_state")
 def pedal_state():
+    os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedalboard[curr_pedal]) + ' 60')
     return redirect(url_for('index'))
 
 @app.post("/pedal_value")
