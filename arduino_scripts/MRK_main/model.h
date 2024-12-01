@@ -4,7 +4,7 @@
 
 int simple_yaw_classifier(float current_yaw) {
     // Threshold for yaw (you can adjust this value)
-    float yawThreshold = 3500.0; // Yaw value that triggers the HTTP request
+    float yawThreshold = 3000.0; // Yaw value that triggers the HTTP request
 
     if (current_yaw >= yawThreshold) {
       return 1;

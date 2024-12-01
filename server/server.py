@@ -4,10 +4,10 @@ import time
 
 app = Flask(__name__)
 
-REQUEST_INTERVAL = 2
+REQUEST_INTERVAL = 5
 last_request_time = time.time()
 
-pedal_array = [0]
+pedal_array = [0, 2, 3, 5]
 curr_pedal = 0
 buffer = []
 interpolated_points = [] 
