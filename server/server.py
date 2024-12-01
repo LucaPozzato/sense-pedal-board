@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
-import numpy as np
 import os
 import time
 
 app = Flask(__name__)
 
-pedal_array = [0, 1, 2]
+REQUEST_INTERVAL = 2
+last_request_time = time.time()
+
+pedal_array = [0]
 curr_pedal = 0
 buffer = []
 interpolated_points = [] 
@@ -18,13 +20,17 @@ def index():
 
 @app.get("/next_pedal")
 def next_pedal():
-    global pedal_array
-    global curr_pedal
+    global pedal_array, curr_pedal, last_request_time
 
-    os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedal_array[curr_pedal]) + ' 60')
-    curr_pedal = (curr_pedal + 1) % len(pedal_array)
-    time.sleep(1)
-    os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedal_array[curr_pedal]) + ' 60')
+    current_time = time.time()
+    elapsed_time = current_time - last_request_time
+    if elapsed_time > REQUEST_INTERVAL:
+        last_request_time = current_time
+        os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedal_array[curr_pedal]) + ' 60')
+        curr_pedal = (curr_pedal + 1) % len(pedal_array)
+        time.sleep(1)
+        os.system('sendmidi dev "IAC Driver Bus 1" on ' + str(pedal_array[curr_pedal]) + ' 60')
+
     return redirect(url_for('index'))
 
 @app.get("/pedal_state")
@@ -38,22 +44,16 @@ def pedal_value():
     r_json = request.json
     value = r_json['pedal value']
 
+    if int(value) == 0:
+        scaled_value = 10
+    else:
+        scaled_value = int(value)/9*127
+    
+    print(scaled_value)
+
     print(value)
 
-    buffer.append(value)
-
-    # If we have at least 3 values, interpolate
-    if len(buffer) == 3:
-        # Interpolate 20 points
-        new_points = interpolate_points(buffer)
-        interpolated_points = new_points
-
-        # Slide the buffer: Keep the last 2 values and wait for the next value
-        buffer = buffer[-2:]
-
-    for point in interpolated_points:
-        os.system('sendmidi dev "IAC Driver Bus 1" cc ' + str(point) + ' ' + str(point))
-        time.sleep(0.1)
+    os.system('sendmidi dev "IAC Driver Bus 1" cc ' + str(scaled_value) + ' ' + str(scaled_value))
     return redirect(url_for('index'))
 
 @app.post("/add_pedal")
@@ -100,10 +100,3 @@ def page_not_found(error):
 @app.errorhandler(400)
 def page_not_found(error):
     return '<h1>400</h1>'
-
-def interpolate_points(points, num=20):
-    x = [0, 1, 2]  # Fixed x-coordinates for the three points
-    y = points
-    x_new = np.linspace(0, 2, num=num + 2)  # Generate intermediate x-coordinates
-    interpolated = np.interp(x_new, x, y)
-    return interpolated[1:-1]  # Exclude the original points (start and end)

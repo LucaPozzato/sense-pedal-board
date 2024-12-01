@@ -7,9 +7,12 @@
 
 // Initialize sensors
 SensorXYZ gyro(SENSOR_ID_GYRO);
-SensorXYZ mag(SENSOR_ID_MAG);
-SensorQuaternion quat(SENSOR_ID_RV);
+// SensorXYZ mag(SENSOR_ID_MAG);
+// SensorQuaternion quat(SENSOR_ID_GAMERV);
+SensorOrientation orient(SENSOR_ID_ORI);
+
 float pitch, yaw, data;
+float lower_pitch = 15, upper_pitch = 35, lower_yaw = 128, upper_yaw = 4500;
 
 void setup()
 {
@@ -26,8 +29,9 @@ void setup()
 
   // Initialize gyroscope
   gyro.begin(); // Start the gyroscope sensor
-  mag.begin();
-  quat.begin();
+  // mag.begin();
+  // quat.begin();
+  orient.begin();
 }
 
 void loop()
@@ -35,19 +39,17 @@ void loop()
   // Update all connected sensors and retrieve their latest data
   BHY2.update(); // Fetch new sensor data from the Nicla Sense ME
 
-  float lower_pitch = 0, upper_pitch = 0.5, lower_yaw = 128, upper_yaw = 4500;
-
   // pitch = -atan2(quat.y(), quat.x()) * 180.0 / PI;
-  pitch = quat.z() / sqrt(1.0 - quat.w() * quat.w());
+  // pitch = quat.z() / sqrt(1.0 - quat.w() * quat.w());
 
-  Serial.println(pitch);
+  pitch = orient.pitch();
 
   if (pitch > upper_pitch) {
     pitch = upper_pitch;
   } else if (pitch < lower_pitch) {
     pitch = lower_pitch;
   }
-  pitch = (int) ((pitch - lower_pitch)/(upper_pitch - lower_pitch) * 127);
+  pitch = (float)((int) (127 - ((pitch - lower_pitch)/(upper_pitch - lower_pitch) * 127)));
   data = pitch;
 
   delay(10);
@@ -60,7 +62,7 @@ void loop()
   }
 
   data = yaw;
-
+    
    // Get angular velocity on the Z-axis in radians per second (or degrees per second if scaled appropriately)
   delay(10);     // Delay for 1 second to control the update rate
 }
@@ -68,6 +70,6 @@ void loop()
 // Function to send data to the master when requested via I2C
 void sendData()
 {
-    // Send the yaw value as bytes over I2C
+  // Send the yaw value as bytes over I2C
   Wire.write((uint8_t *)&data, sizeof(data));
 }

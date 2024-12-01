@@ -23,10 +23,7 @@ WiFiClient client;
 // Variables to store sensor data received from the slave
 float data, pitch, yaw;
 int result = 0;
-
-// Timer variables
-unsigned long lastDataSentTime = 0;
-unsigned long dataSendInterval = 60000; // Interval to send data (1 minute)
+int last_value = 0;
 
 void setup()
 {
@@ -87,9 +84,10 @@ void setup()
 
 void loop()
 {
-  unsigned long currentMillis = millis();
   static unsigned long lastRequestTime = 0;
-  if (currentMillis - lastRequestTime >= 30)
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - lastRequestTime >= 15)
   {
     lastRequestTime = currentMillis;
 
@@ -102,8 +100,11 @@ void loop()
 
       if (data < 128) {
         pitch = data;
-        result = simple_yaw_classifier(yaw);
-        updatePedalValue(result);
+        result = simple_pitch_classifier(pitch);
+        if (result != last_value) {
+          last_value = result;
+          updatePedalValue(result);
+        }
       }
       else {
         yaw = data;
