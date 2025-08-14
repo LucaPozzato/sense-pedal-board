@@ -1,82 +1,49 @@
-# SenseMePedalBoard 🎸🎛️
+# SensePedalBoard
 
-The **Guitar Arduino Pedals** project combines the flexibility of software-based guitar effects with the intuitive control of hardware. Using an audio interface, Pure Data (Pd), and the **Nicla Sense ME**, this project enables you to build a fully interactive, customizable pedalboard without the need for a DAW.
+SensePedalBoard is a software–hardware system that integrates guitar effects into a customizable digital pedalboard controlled via a wearable device.  
+The project combines **Pure Data (Pd)** for real-time audio processing, a **web-based pedalboard manager** for configuration, and the **Nicla Sense ME** for gesture-based wireless control.
 
-This project offers real-time control over pedal parameters and signal flow, letting you focus on playing music while seamlessly managing effects switching between them using foot gestures.
+## Overview
 
----
+Traditional pedalboards require multiple physical devices, cables, and amplifiers. SensePedalBoard reduces this setup to a computer-based environment and a single wireless wearable controller.  
+This approach enables guitarists to design, arrange, and control audio effects dynamically with minimal hardware.
 
-## Features 
+## Features
 
-- **Web-based Pedalboard Management**:
+- **Web-Based Pedalboard Management**
 
-  - Select and rearrange guitar pedals through an intuitive web interface.
-  - Dynamically update the signal chain for effects like distortion, delay, reverb, and more.
+  - Add, remove, and rearrange pedals through an intuitive browser interface.
+  - Dynamically configure the signal chain.
 
-- **Nicla Sense ME Integration**:
+- **Nicla Sense ME Integration**
 
-  - Use the **Nicla Sense ME** as a wireless controller to switch between pedals or adjust parameters like gain, feedback, and delay time with foot movements.
-  - No need to physically interact with amplifiers or the interface during performance.
+  - Wearable controller attached to the shoe.
+  - Gesture recognition for switching pedals or modulating effect parameters.
 
-- **Pure Data (Pd) Effects Implementation**:
+- **Pure Data (Pd) Effects**
 
-  - Guitar effects are implemented in **Pure Data**, a powerful open-source DSP environment.
-  - Avoid the need of an amplifier. Run everything directly from your computer.
-  - Avoid the need for a DAW (Digital Audio Workstation) and low-level customize your own effects. 
+  - Effects implemented in Pure Data without the need for a DAW.
+  - Includes standard effects (fuzz, overdrive, delay, reverb, wah, tremolo, equalizer).
+  - Extendable via the `puredata_scripts` directory.
 
-- **Plug and Play Setup**:
-  - Connect your guitar to your computer via an audio interface.
-  - Start playing with minimal hardware or software dependencies.
+- **Plug and Play**
+  - Compatible with any amplified instrument.
+  - Simple setup with an audio interface and a computer.
 
----
+## Available Pedals
 
-## Pedals Available
+- Clean (unaltered signal)
+- Fuzz (heavy distortion)
+- Overdrive (tube-like saturation)
+- Wah (frequency sweep)
+- Delay (echo with adjustable feedback/time)
+- Reverb (spatial depth simulation)
+- Equalizer (frequency shaping)
+- Tremolo (amplitude modulation)
 
-The following effects are implemented in **Pure Data**:
+Additional effects can be added or modified.
 
-0. **Clean**: Provides an unaltered, clear signal.
-1. **Fuzz**: Creates a heavily distorted and aggressive sound.
-2. **Overdrive**: Simulates warm tube amplifier overdrive.
-3. **Wah**: Produces a sweeping frequency effect for expressive tones.
-4. **Delay**: Adds echo effects with adjustable feedback and time.
-5. **Reverb**: Simulates different room sizes and depths for spatial effects.
-6. **Equalizer**: Allows frequency shaping of the input signal.
-7. **Tremolo**: Modulates volume for a dynamic, pulsating effect.
+## Gesture Controls
 
-These effects can be easily extended or customized in the `puredata_scripts` folder.
-
----
-
-## Gestures Available
-
-Once the Nicla Sense Me is attached to your foot and the pedal order is configured by the user via the web application, the following gestures are recognized:
-
-1. **Swipe right**: Moves to the next pedal on the pedalboard.
-2. **Swipe up and down**: Modulates the selected pedal's parameters, adjusting the intensity of the effect as if you were turning a knob on an amplifier.
-
----
-
-## Installation and Setup
-
-1. Clone the Repository:
-
-   ```bash
-   git clone https://github.com/niccolopuccia/GuitarArduinoPedals.git
-   cd GuitarArduinoPedals
-   ```
-
-2. Set Up the Nicla Sense ME
-3. Upload the provided Arduino code (NICLA_MAIN folder) to the Nicla Sense ME using the Arduino IDE.
-4. Link Nicla Sense ME to Arduino MKR 1010 shield to enable WI-Fi communication.
-5. Upload the provided Arduino code (MKR_MAIN folder) to the shield using the Arduino IDE.
-6. Attach the Nicla Sense ME to your foot.
-7. Run Pure Data:
-
-- Open the pure_data/pedalboard.pd file in Pure Data and run it.
-
-8. Launch the Web Interface:
-
-- Open the web_interface/index.html file in your browser.
-- Use the interface to select and arrange pedals.
-  
-9. Begin playing
+- **Swipe right** → switch to the next pedal.
+- **Tilt foot up/down** → modulate effect parameters in real time.
