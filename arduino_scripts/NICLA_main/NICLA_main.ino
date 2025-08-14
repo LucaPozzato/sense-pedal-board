@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "Arduino_BHY2.h"
 #include <Wire.h>
+#include "Nicla_System.h"
 
 // Initialize sensors
 SensorXYZ gyro(SENSOR_ID_GYRO);
@@ -16,9 +17,8 @@ float lower_pitch = 15, upper_pitch = 35, lower_yaw = 128, upper_yaw = 4500;
 
 void setup()
 {
-  Serial.begin(115200); // Start serial communication at a baud rate of 115200 -> 15200 baud means 115,200 bits per second.
-  while (!Serial)
-    ; // Wait for the Serial Monitor to open (optional for debugging)
+  nicla::begin();
+  nicla::leds.begin();
 
   // Begin the Eslov communication interface (I2C communication for Nicla Sense ME)
   BHY2.begin(NICLA_I2C, NICLA_VIA_ESLOV);
@@ -39,6 +39,12 @@ void loop()
   // Update all connected sensors and retrieve their latest data
   BHY2.update(); // Fetch new sensor data from the Nicla Sense ME
 
+  nicla::leds.setColor(red);
+
+  if (!Wire.available()) {  
+    Wire.begin(0x29);
+  } 
+  
   // pitch = -atan2(quat.y(), quat.x()) * 180.0 / PI;
   // pitch = quat.z() / sqrt(1.0 - quat.w() * quat.w());
 

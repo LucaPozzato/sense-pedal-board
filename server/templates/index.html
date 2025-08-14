@@ -1,263 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SensePedalBoard</title>
-
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Pedalboard</title>
+  <!-- Programmer's Font: JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    /* General page styling */
-    body {
-        background-color: #121212; /* Dark background color */
-        color: #ffffff; /* Light text color for contrast */
-        font-family: Arial, sans-serif; /* Clean font style */
+    /* General Styling */
+    body { 
+      font-family: 'JetBrains Mono', monospace;
+      text-align: center; 
+      background: #222; 
+      color: #fff; 
+      padding: 20px;
+      margin: 0;
+    }
+    
+    h1, h3 { 
+      font-weight: 300; 
+      margin: 10px 0;
     }
 
-    /* Carousel image styling */
-    .carousel-item img {
-        width: 100%; /* Makes images stretch across the full width */
-        height: auto; /* Adjusts the height to maintain aspect ratio */
+    h1 {
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
 
-    /* Fixed height for the carousel container */
-    .carousel-inner {
-        height: 80%; /* Ensures images occupy the full height of the carousel */
+    h3 {
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    
+    /* Pedal Container */
+    .pedal-container { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      gap: 10px; 
+      margin-top: 20px; 
     }
 
-    .fixed-height {
-      height: 500px; /* Set height of both columns */
-      overflow: hidden; /* Prevent overflow in the carousel or other sections */
+    .pedal { 
+      width: 130px; 
+      height: 50px; 
+      cursor: pointer; 
+      border-radius: 8px;
+      background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+      box-shadow: 3px 3px 6px #111, -3px -3px 6px #333;
+      text-align: center; 
+      line-height: 50px; 
+      font-weight: bold;
+      color: #ddd;
+      transition: all 0.2s ease-in-out;
     }
 
-      /* Styling for the array-like structure container */
-#arrayContainer {
-  display: flex; /* Use flexbox for horizontal alignment */
-  flex-wrap: nowrap; /* Ensure items stay in a single row */
-  gap: 5px; /* Space between images */
-  padding: 10px; /* Padding inside the container */
-  border: 2px solid #ccc; /* Highlighted border for the container */
-  width: 100%; /* Fixed width for the container */
-  height: 5cm; /* Fixed height for the container */
-  background-color: #1e1e1e; /* Slightly lighter background for contrast */
-  overflow-x: auto; /* Allow horizontal scrolling */
-  overflow-y: hidden; /* Prevent vertical scrolling */
-  justify-content: flex-start; /* Align images to the left */
-  align-items: center; /* Center images vertically */
-}
+    .pedal:hover { 
+      background: #444;
+      transform: scale(1.05);
+    }
 
-/* Styling for each appended image in the array-like structure */
-.array-item {
-  width: 4cm; /* Fixed width for appended images */
-  height: 4cm; /* Fixed height for appended images */
-  object-fit: cover; /* Ensure images maintain aspect ratio */
-  border: 2px solid #ccc; /* Add a light border for visual separation */
-  flex: 0 0 ; /* Prevent images from growing or shrinking */
-}
+    /* Pedalboard */
+    .pedalboard { 
+        display: flex; 
+        flex-wrap: wrap; /* added to allow wrapping when images don't fit */
+        justify-content: center; 
+        gap: 15px; 
+        margin-top: 20px;
+        padding: 10px;
+        background: #111;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        min-height: 100px;
+    }
 
+    /* Make pedalboard images bigger */
+    .pedalboard img { 
+      width: 300px; /* increased from 120px */
+      height: auto; 
+      transition: all 0.2s ease-in-out;
+    }
+
+    .highlight { 
+      border: 3px solid #41a6ff !important; 
+      box-shadow: 0px 0px 10px cyan;
+      transform: scale(1.1);
+    }
+
+    /* Buttons */
+    .controls { 
+      margin-top: 20px;
+    }
+
+    button {
+      font-family: 'JetBrains Mono', monospace;  
+      background: #444; 
+      color: white; 
+      border: none; 
+      padding: 10px 20px; 
+      font-size: 16px; 
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 5px;
+    }
+
+    button:hover { 
+      background: #666; 
+    }
+
+    /* Slider Styling */
+    input[type="range"] { 
+      appearance: none;
+      -webkit-appearance: none; 
+      width: 200px;
+      height: 8px;
+      background: #555;
+      border-radius: 4px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb { 
+      -webkit-appearance: none; 
+      width: 20px; 
+      height: 20px; 
+      background: #41a6ff; 
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+    }
+
+    #slider-value { 
+      font-size: 18px; 
+      color: #41a6ff; 
+      margin-left: 10px; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
 
-<!-- Navbar (Top) -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <!-- Logo and Brand Name -->
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="/static/images/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
-      SensePedalBoard
-    </a>
-    <!-- Toggler Button for Mobile View -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- Navbar Links -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  <h1>SensePedalBoard</h1>
 
-
-<div class="container mt-5">
-  <div class="row">
-    <!-- Left Column (Carousel) -->
-    <div class="col-md-7 fixed-height">
-      <!-- Bootstrap Carousel -->
-      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-        <!-- Carousel indicators -->
-        <ol class="carousel-indicators">
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5"></li>
-          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6"></li>
-        </ol>
-        <!-- Carousel images -->
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="/static/Images/pedals_custom_bg/fuzz.jpeg" class="d-block w-100" alt="Auto Wah">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/overdrive.jpeg" class="d-block w-100" alt="Blues Driver">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/auto_wah.png" class="d-block w-100" alt="Delay">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/delay.jpeg" class="d-block w-100" alt="Distortion">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/reverb.jpeg" class="d-block w-100" alt="Equalizer">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/equalizer.jpeg" class="d-block w-100" alt="Fuzz">
-          </div>
-          <div class="carousel-item">
-            <img src="/static/Images/pedals_custom_bg/tremolo.jpeg" class="d-block w-100" alt="Overdrive">
-          </div>
-        </div>
-        <!-- Carousel navigation buttons -->
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </a>
-      </div>
-    </div>
-
-      
-        <!-- Right Column -->
-        <div class="col-md-5">
-          <div class="bg-dark text-white p-3 fixed-height" style="display: flex; align-items: center; justify-content: center; height: 500px; width: 500px;">
-            <img src="/static/images/pd_screenshot.png" alt="Logo" class="d-inline-block" style="width: 100%; height: 100%; object-fit: cover;">
-          </div>
-        </div>
-
-    <!-- Bottom Row -->
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="bg-dark text-white p-3">
-          <h3>Choose Pedal Order</h3>
-          <p>Click pedals to create your desired pedalboard setup.</p>
-          <!-- Array-like structure -->
-          <div id="arrayContainer">
-            <!-- Clicked images from the carousel will be appended here -->
-          </div>
-          <!-- Clear button -->
-          <button id="clearButton" class="btn btn-danger mt-3" style="background-color: #ff9100; color: white">Clear All</button>
-        </div>
-      </div>
-    </div>
+  <h3>Select a Pedal:</h3>
+  <div class="pedal-container">
+    <div class="pedal" data-pedal="0">Clean</div>
+    <div class="pedal" data-pedal="1">Fuzz</div>
+    <div class="pedal" data-pedal="2">Overdrive</div>
+    <div class="pedal" data-pedal="3">Wah</div>
+    <div class="pedal" data-pedal="5">Reverb</div>
+    <div class="pedal" data-pedal="6">EQ</div>
+    <div class="pedal" data-pedal="7">Tremolo</div>
+    <div class="pedal" data-pedal="9">Ringmodulator</div>
+    <div class="pedal" data-pedal="10">Synth</div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <h3>Your Pedalboard:</h3>
+  <div class="pedalboard"></div>
+
+  <div class="controls">
+    <button id="next-pedal">Next Pedal</button>
+    <button id="clear-board">Clear Pedalboard</button>
+  </div>
+
+  <h3>Pedal Value:</h3>
+  <input type="range" id="pedal-slider" min="0" max="127" value="0">
+  <span id="slider-value">0</span>
+
   <script>
-    // Select all images in the carousel
-    const carouselImages = document.querySelectorAll('.carousel-item img');
+    let selectedPedals = [];
+    let currentPedalIndex = 0;
+    let small = false;
+    let pedalNames = ["clean", "fuzz", "overdrive", "wah", "", "reverb", "equalizer", "tremolo", "", "ringmodulator", "synth"];
 
-    // Select the container for appended images
-    const arrayContainer = document.getElementById('arrayContainer');
-
-    // Select the Clear button
-    const clearButton = document.getElementById('clearButton');
-
-    // Function to check if an image already exists in the arrayContainer
-    function imageExists(src) {
-      // Check if any existing image in the container has the same src
-      const existingImages = arrayContainer.querySelectorAll('.array-item');
-      return Array.from(existingImages).some(image => image.src === src);
-    }
-
-    // Add click listener to each image in the carousel
-    carouselImages.forEach((image, index) => {
-      image.addEventListener('click', () => {
-        // Check if the image already exists in the container
-        if (imageExists(image.src)) {
-          alert("This pedal has already been inserted in the pedalboard.");
-          return; // Do nothing if the image already exists
-        }
-
-        // Clone the clicked image
-        const imgClone = image.cloneNode(true);
-        imgClone.classList.add('array-item'); // Add a class for styling
-
-        // Append the cloned image to the array-like structure
-        arrayContainer.appendChild(imgClone);
-
-        //Here must be inserted the HTTP call to server that notifies that the pedal has been successful added to the circular array
+    // Click to add a pedal
+    $(".pedal").click(function () {
+      let pedalIndex = $(this).data("pedal");
+      if (!selectedPedals.includes(pedalIndex)) {
+        selectedPedals.push(pedalIndex);
         
-        // Create the payload with the pedal number
-        const payload = {
-          pedalNumber: index + 1 // Assuming pedal numbers start from 1
-        };
-
-        // Send HTTP request to the server
-        fetch('/add_pedal', { // Replace `/add-pedal` with your server endpoint
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Specify JSON payload
-        },
-        body: JSON.stringify(payload), // Convert the payload to JSON
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to add pedal to the server.');
+        $.ajax({
+          url: "/add_pedal",
+          type: "POST",
+          contentType: "application/json", // explicitly set the content type
+          data: JSON.stringify({ pedalNumber: pedalIndex }),
+          success: function(response) {
+            console.log("Pedal added successfully:", response);
+          },
+          error: function(xhr, status, error) {
+            console.error("Error adding pedal:", error);
           }
-          return response.json(); // Parse JSON response from server if needed
-        })
-        // .then(data => {
-        //   console.log('Server response:', data); // Optional: Log server response
-        //   alert(`Pedal ${payload.pedalNumber} added successfully.`);
-        // })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed to notify the server.');
         });
+      }
+    });
+
+    // Cycle through pedals
+    $("#next-pedal").click(function () {
+      $.get("/next_pedal", function () {
+        updatePedalHighlight();
       });
     });
 
-    // Clear button functionality
-    clearButton.addEventListener('click', () => {
-      // Clear all content from the array container
-      arrayContainer.innerHTML = '';
+    // Clear pedalboard
+    $("#clear-board").click(function () {
+      $.get("/clear_pedal_array", function () {
+        selectedPedals = [];
+        $(".pedalboard").empty();
+        currentPedalIndex = 0;
+      });
 
-      // Send HTTP request to the server
-      fetch('/clear_pedal_array', {
-        method: 'GET',
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to clear array to the server.');
+      small = false;
+      pedalboard.find('img').css('width', '300'); // reset pedal image size
+    });
+
+    // Update just the highlight without re‑rendering the entire board
+    function updatePedalHighlight() {
+      $.get("/pedal_state", function (data) {
+        let activePedal = data.active_pedal;
+        $(".pedalboard img").removeClass("highlight");
+        $(".pedalboard img").each(function () {
+          if ($(this).data("pedal") == activePedal) {
+            $(this).addClass("highlight");
           }
-          return response.json();
-        })
-        // .then(data => {
-        //   console.log('Server response:', data);
-        //   alert(`Array cleared successfully`);
-        // })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed in clearing array');
         });
       });
+    }
+
+    // Poll for pedal value
+    function updatePedalValue() {
+      $.get("/pedal_value", function (data) {
+        let pedalValue = data.pedal_value;
+        $("#pedal-slider").val(pedalValue);
+        $("#slider-value").text(pedalValue);
+      });
+    }
+
+    // Function to update the pedalboard UI based on the server state
+    function updatePedalBoard() {
+      $.get("/get_pedal_board", function (data) {
+        let newPedalBoard = data.pedal_board;
+        
+        // Get current pedals displayed in the UI
+        let currentPedals = $(".pedalboard img")
+          .map(function() { return $(this).data("pedal"); })
+          .get();
+
+        // Only update if there's a difference
+        if (JSON.stringify(currentPedals) !== JSON.stringify(newPedalBoard)) {
+          $(".pedalboard").empty();
+          newPedalBoard.forEach(pedalIndex => {
+            const inlineStyle = small ? 'style="width:200px;height:200px;"' : '';
+            $(".pedalboard").append(
+              `<img src="/static/images/pedals_no_bg/${pedalNames[pedalIndex]}.png" class="pedal" data-pedal="${pedalIndex}" ${inlineStyle}>`
+            );
+          });
+        }
+        updatePedalHighlight(); // Update highlight state as needed
+      });
+    }
+
+    // Slider value change
+    $("#pedal-slider").on("input", function () {
+      let value = $(this).val();
+      $("#slider-value").text(value);
+      $.post("/pedal_value", JSON.stringify({ "pedal value": value }), "json");
+    });
+
+
+    function adjustPedalImages() {
+      const pedalboard = $('.pedalboard');
+      const maxPedalboardHeight = $(window).height() * 0.45; // maximum allowed height (80% of viewport)
+      const currentHeight = pedalboard.outerHeight();
+      
+      if (currentHeight > maxPedalboardHeight || small) {
+        small = true;
+        const newWidth = 200;
+        const newHeight = 200;
+        pedalboard.find('img').css('width', newWidth + 'px');
+        pedalboard.find('img').css('height', newHeight + 'px');
+      }
+    }
+
+    // Poll intervals
+    setInterval(updatePedalValue, 50);
+    setInterval(updatePedalBoard, 200);
+    setInterval(updatePedalHighlight, 100);
+    setInterval(adjustPedalImages, 200);
   </script>
+
 </body>
 </html>
